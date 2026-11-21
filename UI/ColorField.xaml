@@ -1,0 +1,49 @@
+<UserControl x:Class="DynamicIsland.UI.ColorField"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <UserControl.Resources>
+    <ControlTemplate x:Key="DotTemplate" TargetType="Button">
+      <Border x:Name="Ring" Width="28" Height="28" CornerRadius="14" Padding="2" Background="Transparent"
+              BorderThickness="2" BorderBrush="Transparent">
+        <Border CornerRadius="12" Background="{TemplateBinding Background}" BorderThickness="1" BorderBrush="#33808080"/>
+      </Border>
+      <ControlTemplate.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter TargetName="Ring" Property="BorderBrush" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </Trigger>
+      </ControlTemplate.Triggers>
+    </ControlTemplate>
+  </UserControl.Resources>
+
+  <StackPanel Orientation="Horizontal">
+    <Button x:Name="SwatchButton" Template="{StaticResource DotTemplate}" Cursor="Hand" Focusable="False"
+            ToolTip="Pick a colour" Click="Swatch_Click" VerticalAlignment="Center"/>
+    <TextBox x:Name="HexBox" Width="104" Margin="8,0,0,0" VerticalAlignment="Center" MaxLength="16"
+             LostKeyboardFocus="HexBox_LostFocus" KeyDown="HexBox_KeyDown" ToolTip="Hex code, e.g. #FF8A50"/>
+
+    <Popup x:Name="PalettePopup" PlacementTarget="{Binding ElementName=SwatchButton}" Placement="Bottom"
+           VerticalOffset="6" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade">
+      <Border Margin="8" Padding="10" CornerRadius="8" BorderThickness="1"
+              Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+              BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
+        <Border.Effect>
+          <DropShadowEffect BlurRadius="16" ShadowDepth="3" Opacity="0.3"/>
+        </Border.Effect>
+        <StackPanel Width="192">
+          <ItemsControl x:Name="Palette">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Button Template="{StaticResource DotTemplate}" Background="{Binding}" Tag="{Binding}" Margin="2"
+                        Cursor="Hand" Focusable="False" Click="PaletteColor_Click"/>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Content="More colours…" Margin="0,8,0,0" HorizontalAlignment="Stretch" Click="More_Click"/>
+        </StackPanel>
+      </Border>
+    </Popup>
+  </StackPanel>
+</UserControl>

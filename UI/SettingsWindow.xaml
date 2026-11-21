@@ -1,0 +1,464 @@
+<Window x:Class="DynamicIsland.UI.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:DynamicIsland.UI"
+        Title="Customize Dynamic Island"
+        Width="720" Height="860" MinWidth="560" MinHeight="480"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="14">
+  <Window.Resources>
+    <ui:EnumIsConverter x:Key="EnumIs"/>
+
+    <Style x:Key="RowControl" TargetType="FrameworkElement">
+      <Setter Property="DockPanel.Dock" Value="Right"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <LinearGradientBrush x:Key="Wallpaper" StartPoint="0,0" EndPoint="1,1">
+      <GradientStop Color="#5B6E96" Offset="0"/>
+      <GradientStop Color="#2B3550" Offset="0.55"/>
+      <GradientStop Color="#40284F" Offset="1"/>
+    </LinearGradientBrush>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <StackPanel Margin="32,18,32,14">
+      <TextBlock Text="Customize" Style="{DynamicResource PageTitle}"/>
+      <TextBlock Style="{DynamicResource Hint}" FontSize="13" Margin="0,4,0,16"
+                 Text="Every change shows on the island right away and is saved automatically."/>
+      <WrapPanel>
+        <TextBlock Text="Show on island" VerticalAlignment="Center" Margin="0,0,12,6"/>
+        <Border Style="{DynamicResource SegmentBar}" Margin="0,0,0,6">
+          <StackPanel Orientation="Horizontal">
+            <RadioButton Style="{DynamicResource Segment}" GroupName="Mode" Content="Live" ToolTip="Normal behaviour: music, system info and pop-ups"
+                         IsChecked="{Binding Mode, Converter={StaticResource EnumIs}, ConverterParameter=Live}"/>
+            <RadioButton Style="{DynamicResource Segment}" GroupName="Mode" Content="Clipboard" ToolTip="Your newest screenshots and photos; click one to copy it"
+                         IsChecked="{Binding Mode, Converter={StaticResource EnumIs}, ConverterParameter=Clipboard}"/>
+            <RadioButton Style="{DynamicResource Segment}" GroupName="Mode" Content="CP" ToolTip="Quick switches (Wi-Fi, Bluetooth, Energy saver, Airplane mode, Nearby sharing) and live CPU, RAM, disk and GPU load"
+                         IsChecked="{Binding Mode, Converter={StaticResource EnumIs}, ConverterParameter=CP}"/>
+            <RadioButton Style="{DynamicResource Segment}" GroupName="Mode" Content="Notifications" ToolTip="Your Windows notifications, with a button to clear them all"
+                         IsChecked="{Binding Mode, Converter={StaticResource EnumIs}, ConverterParameter=Notifications}"/>
+          </StackPanel>
+        </Border>
+      </WrapPanel>
+    </StackPanel>
+
+    <Border Height="1" VerticalAlignment="Bottom" Background="{DynamicResource HeaderRule}"/>
+
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="32,0,32,28">
+        <TextBlock Style="{DynamicResource Section}" Text="Theme" Margin="2,4,0,10"/>
+        <ItemsControl x:Name="PresetList">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Button Style="{DynamicResource PresetButton}" Click="Preset_Click" ToolTip="{Binding Name}">
+                <StackPanel Width="140">
+                  <Border Height="64" CornerRadius="7" Background="{StaticResource Wallpaper}" ClipToBounds="True">
+                    <Border Width="114" Height="28" CornerRadius="14" VerticalAlignment="Top" Margin="0,10,0,0"
+                            Background="{Binding IslandBrush}" BorderBrush="{Binding OutlineBrush}"
+                            BorderThickness="{Binding OutlineThickness}" Effect="{Binding Glow}">
+                      <Grid Margin="6,0,10,0">
+                        <Ellipse Width="16" Height="16" HorizontalAlignment="Left" Fill="{Binding ArtBrush}"/>
+                        <TextBlock Text="Golden Hour" Margin="22,0,26,0" FontSize="9" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{Binding TextBrush}"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                          <Rectangle Width="3" Height="6" RadiusX="1.5" RadiusY="1.5" Margin="1,0" Fill="{Binding AccentBrush}"/>
+                          <Rectangle Width="3" Height="12" RadiusX="1.5" RadiusY="1.5" Margin="1,0" Fill="{Binding AccentBrush}"/>
+                          <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Margin="1,0" Fill="{Binding AccentBrush}"/>
+                          <Rectangle Width="3" Height="10" RadiusX="1.5" RadiusY="1.5" Margin="1,0" Fill="{Binding AccentBrush}"/>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                  </Border>
+                  <TextBlock Text="{Binding Name}" Style="{DynamicResource PresetName}"/>
+                </StackPanel>
+              </Button>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock x:Name="CustomThemeNote" Style="{DynamicResource Hint}" Visibility="Collapsed" Margin="2,0,0,0"
+                   Text="Custom colours. Pick a theme above to start over from it."/>
+
+        <TextBlock Style="{DynamicResource Section}" Text="Colours"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <Border Style="{DynamicResource SegmentBar}" DockPanel.Dock="Right" VerticalAlignment="Center">
+              <StackPanel Orientation="Horizontal">
+                <RadioButton Style="{DynamicResource Segment}" GroupName="Surface" Content="Flat"
+                             IsChecked="{Binding Surface, Converter={StaticResource EnumIs}, ConverterParameter=Flat}"/>
+                <RadioButton Style="{DynamicResource Segment}" GroupName="Surface" Content="Liquid glass"
+                             IsChecked="{Binding Surface, Converter={StaticResource EnumIs}, ConverterParameter=LiquidGlass}"/>
+              </StackPanel>
+            </Border>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Surface"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="How the island is painted. Liquid glass adds a glass sheen, steel-edged buttons and colourless bars."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <ui:ColorField Style="{StaticResource RowControl}" Value="{Binding IslandColor}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Island colour"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0.2" Maximum="1" TickFrequency="0.05" Value="{Binding IslandOpacity}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding IslandOpacity, StringFormat={}{0:0%}}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Opacity"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Lower it to let your wallpaper show through."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <ui:ColorField Style="{StaticResource RowControl}" Value="{Binding TextColor}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Text and icons"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Faded text, bars and buttons are worked out from this."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Border Style="{DynamicResource SegmentBar}" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                  <RadioButton Style="{DynamicResource Segment}" GroupName="Accent" Content="Album art"
+                               IsChecked="{Binding AccentSource, Converter={StaticResource EnumIs}, ConverterParameter=AlbumArt}"/>
+                  <RadioButton Style="{DynamicResource Segment}" GroupName="Accent" Content="Custom"
+                               IsChecked="{Binding AccentSource, Converter={StaticResource EnumIs}, ConverterParameter=Custom}"/>
+                </StackPanel>
+              </Border>
+              <ui:ColorField Margin="12,0,0,0" Value="{Binding AccentColor}"
+                             IsEnabled="{Binding AccentSource, Converter={StaticResource EnumIs}, ConverterParameter=Custom}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Accent"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Equalizer, progress bar and glow."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <ui:ColorField Style="{StaticResource RowControl}" Value="{Binding OutlineColor}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Outline colour"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="1" TickFrequency="0.05" Value="{Binding OutlineOpacity}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding OutlineOpacity, StringFormat={}{0:0%}}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Outline strength"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="0% removes the outline."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0.5" Maximum="3" TickFrequency="0.5" Value="{Binding OutlineWidth}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding OutlineWidth, StringFormat={}{0:0.0} px}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Outline width"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding Glow}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Glow"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="A soft halo around the island in the accent colour."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}" IsEnabled="{Binding Glow}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0.1" Maximum="1" TickFrequency="0.05" Value="{Binding GlowStrength}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding GlowStrength, StringFormat={}{0:0%}}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Glow strength"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <TextBlock Style="{DynamicResource Section}" Text="Shape and size"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0.8" Maximum="1.5" TickFrequency="0.05" Value="{Binding Scale}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding Scale, StringFormat={}{0:0%}}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Size"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Scales everything: the pill, text and controls."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="1" TickFrequency="0.05" Value="{Binding Roundness}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding Roundness, StringFormat={}{0:0%}}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Corner roundness"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="100% is a full pill; lower is squarer."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="40" Maximum="240" TickFrequency="4" Value="{Binding IdleWidth}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding IdleWidth, StringFormat={}{0:0} px}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Idle width"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="How wide the pill is when nothing is happening."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding HideWhenIdle}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Hide when idle"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Only appear for music and pop-ups. Use the tray icon to get back here."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <TextBlock Style="{DynamicResource Section}" Text="Text and content"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <ComboBox x:Name="FontBox" DockPanel.Dock="Right" VerticalAlignment="Center" Width="260" SelectedItem="{Binding FontFamily}"
+                      MaxDropDownHeight="360">
+              <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate><VirtualizingStackPanel/></ItemsPanelTemplate>
+              </ComboBox.ItemsPanel>
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding}" FontFamily="{Binding}"/>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Font"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Used for song titles, artists and numbers."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding ShowEqualizer}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Equalizer bars"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <TextBlock Style="{DynamicResource Section}" Text="Position"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="48" TickFrequency="1" Value="{Binding TopOffset}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding TopOffset, StringFormat={}{0:0} px}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Distance from top"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Button Content="Centre" Margin="0,0,12,0" Click="Center_Click" ToolTip="Also brings a dragged island back to the top"/>
+              <Slider x:Name="HorizontalSlider" Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" TickFrequency="2"
+                      Value="{Binding HorizontalOffset}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding HorizontalOffset, StringFormat={}{0:+0;-0;0} px}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Left / right"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="After dragging the island, Centre puts it back at the top of the screen."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <TextBlock Style="{DynamicResource Section}" Text="Motion"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Button Content="Try it" Margin="0,0,12,0" Click="PlayMotion_Click" ToolTip="Open and close the island once"/>
+              <ComboBox x:Name="MotionBox" Width="200" DisplayMemberPath="Label" SelectedValuePath="Value"
+                        SelectedValue="{Binding Motion}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Animation"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="How the island stretches between sizes."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <TextBlock Style="{DynamicResource Section}" Text="Behaviour"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <Border DockPanel.Dock="Right" Style="{DynamicResource SegmentBar}" VerticalAlignment="Center">
+              <StackPanel Orientation="Horizontal">
+                <RadioButton Style="{DynamicResource Segment}" GroupName="OpenBy" Content="Hover" IsChecked="{Binding OpenOnHover}"
+                             ToolTip="Opens when the mouse rests on it, closes when the mouse leaves"/>
+                <RadioButton Style="{DynamicResource Segment}" GroupName="OpenBy" Content="Click" IsChecked="{Binding OpenByClick}"
+                             ToolTip="Click to open, click again to close; press, hold and move to drag it anywhere"/>
+              </StackPanel>
+            </Border>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Open the island by"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="With Click, press and hold the island and move the mouse to drag it anywhere."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}" IsEnabled="{Binding OpenOnHover}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="800" TickFrequency="20" Value="{Binding HoverDelayMs}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding HoverDelayMs, StringFormat={}{0:0} ms}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Hover delay"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Longer stops it opening when your mouse just passes by."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding HideInFullscreen}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Hide during fullscreen"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Steps aside for fullscreen games and videos."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <TextBox DockPanel.Dock="Right" Width="130" VerticalAlignment="Center" Text="{Binding Shortcut, UpdateSourceTrigger=LostFocus}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Open/close shortcut"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Type keys like Ctrl+Alt+F12, then click elsewhere. Opens the island, even over a game, until pressed again."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding ShortcutOnly}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Show only with the shortcut"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Keeps the island off the screen, so nothing under it is blocked. Pop-ups are off too."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <TextBlock Style="{DynamicResource Section}" Text="Pop-ups"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding TrackPopup}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Song changes"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding ImagePopup}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="New screenshots and photos"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="In Live mode, briefly opens the Clipboard tray when a new picture arrives."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding VolumePopup}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Volume"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="While the island is open, the level always shows inside it."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding BrightnessPopup}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Brightness"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox Style="{DynamicResource Switch}" IsChecked="{Binding PowerPopup}"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Charger and low battery"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <StackPanel Style="{StaticResource RowControl}" Orientation="Horizontal">
+              <Slider Width="210" VerticalAlignment="Center" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0.8" Maximum="5" TickFrequency="0.1" Value="{Binding PopupSeconds}"/>
+              <TextBlock Style="{DynamicResource ValueText}" Text="{Binding PopupSeconds, StringFormat={}{0:0.0} s}"/>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="How long pop-ups stay"/>
+              <TextBlock Style="{DynamicResource Hint}" Text="Song and battery pop-ups stay about a second longer so you can read them."/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <TextBlock Style="{DynamicResource Section}" Text="General"/>
+        <Border Style="{DynamicResource Row}">
+          <DockPanel>
+            <CheckBox x:Name="StartupSwitch" Style="{DynamicResource Switch}" Click="Startup_Click"/>
+            <StackPanel Style="{DynamicResource RowText}">
+              <TextBlock Text="Start with Windows"/>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+        <TextBlock Style="{DynamicResource Hint}" Margin="2,10,0,0"
+                   Text="Open this window any time: right-click the island, double-click its tray icon, or start Dynamic Island again."/>
+      </StackPanel>
+    </ScrollViewer>
+
+    <Border Grid.Row="2" BorderThickness="0,1,0,0" Padding="32,12"
+            BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+      <DockPanel>
+        <Button DockPanel.Dock="Right" Content="Done" MinWidth="110" Click="Done_Click" Tag="Primary"/>
+        <Button Content="Reset everything" HorizontalAlignment="Left" Click="Reset_Click"
+                ToolTip="Go back to the default look and behaviour"/>
+      </DockPanel>
+    </Border>
+    <Rectangle x:Name="Grain" Grid.RowSpan="3" IsHitTestVisible="False" Visibility="Collapsed" Opacity="0.075"/>
+  </Grid>
+</Window>
